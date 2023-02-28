@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Add an icon to the map</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYmFsN2hhemFyIiwiYSI6ImNsZW8xZzhjejBjc2czd3BhcWFkdm81a2IifQ.5LRKXungN72fuodnrz8lbg';
+
+    const lng = -83.54594972360404;
+    const lat = 8.68624981393009;
+    const zoom = 15;
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      center: [lng, lat],
+      maxZoom: 20,
+      minZoom: 10,
+      zoom: zoom,
+    });
+
+    const coordinates = [
+      [
+        -83.54594972360404,
+        8.68624981393009
+      ],
+      [
+        -83.5454766360034,
+        8.686012085995856
+      ],
+      [
+        -83.54510605071688,
+        8.686023777537628
+      ],
+      [
+        -83.54464873270258,
+        8.686121207034162
+      ],
+      [
+        -83.54352514965186,
+        8.68534956473006
+      ],
+      [
+        -83.54331226023137,
+        8.685411919722583
+      ],
+      [
+        -83.54333197221479,
+        8.685634059299659
+      ],
+      [
+        -83.54297321411818,
+        8.685805535373817
+      ],
+      [
+        -83.54303629246486,
+        8.686160178825688
+      ],
+      [
+        -83.54251195370746,
+        8.68632775748236
+      ],
+      [
+        -83.54219656197412,
+        8.686222533683434
+      ],
+      [
+        -83.54218079238716,
+        8.686920127948511
+      ],
+      [
+        -83.5425158961039,
+        8.687076014756997
+      ],
+      [
+        -83.54322158510843,
+        8.68769566418382
+      ],
+      [
+        -83.54397458287202,
+        8.687633309571027
+      ],
+      [
+        -83.54458565435593,
+        8.687181238317635
+      ],
+      [
+        -83.54529528575688,
+        8.686885053407153
+      ],
+      [
+        -83.54594972360404,
+        8.68624981393009
+      ]
+    ];
+    const longitudes = coordinates.map(point => point[0]);
+    const latitudes = coordinates.map(point => point[1]);
+    const maxLon = Math.max(...longitudes);
+    const minLon = Math.min(...longitudes);
+    const maxLat = Math.max(...latitudes);
+    const minLat = Math.min(...latitudes);
+
+    map.on('load', () => {
+
+      // Add a data source containing one point feature.
+      map.addSource('ndvi', {
+        type: 'geojson',
+        data: {
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Polygon",
+                coordinates: [coordinates],
+              }
+            }
+          ]
+        }
+      });
+
+
+      map.addSource('layer', {
+        'type': 'image',
+        'url': 'https://i.ibb.co/7bFkb4g/banegas-farm-ndvi-20230214.png',
+        'coordinates': [
+          [minLon, maxLat],
+          [maxLon, maxLat],
+          [maxLon, minLat],
+          [minLon, minLat],
+        ]
+      });
+
+      map.addLayer({
+        id: 'layer-layer',
+        'type': 'raster',
+        'source': 'layer',
+        'paint': {
+          'raster-fade-duration': 0
+        }
+      });
+
+
+    });
+  </script>
+
+</body>
+
+</html>
